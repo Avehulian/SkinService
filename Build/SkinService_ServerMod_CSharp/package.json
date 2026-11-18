@@ -1,0 +1,12 @@
+{
+	"name": "SkinService",
+	"author": "kmyuhkyuk",
+	"version": "1.6.0",
+	"sptVersion": "~4.1.6",
+	"license": "GNU GPLv3",
+	"main": "SkinService.dll",
+	"description": "Server-side mod for SkinService - handles skin and voice changes for PMC and Scav players",
+	"entry": "SkinService.dll",
+	"hooks": {},
+	"scripts": {}
+}

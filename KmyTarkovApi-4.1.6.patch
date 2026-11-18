@@ -1,0 +1,95 @@
+diff --git a/KmyTarkovApi/Helpers/PlayerHelper.cs b/KmyTarkovApi/Helpers/PlayerHelper.cs
+index be13017..7cf5207 100644
+--- a/KmyTarkovApi/Helpers/PlayerHelper.cs
++++ b/KmyTarkovApi/Helpers/PlayerHelper.cs
+@@ -1,4 +1,4 @@
+-﻿using System;
++using System;
+ using System.Collections.Generic;
+ using System.Reflection;
+ using System.Reflection.Emit;
+@@ -100,11 +100,22 @@ namespace KmyTarkovApi.Helpers
+ 
+             if (EFTVersion.IsFika)
+             {
+-                var observedCoopPlayerType = RefTool.GetPluginType(EFTPlugins.FikaCore,
+-                    "Fika.Core.Main.Players.ObservedPlayer");
++                // Fika is optional - a changed Fika type name must not break the player helper.
++                try
++                {
++                    var observedCoopPlayerType = RefTool.GetPluginType(EFTPlugins.FikaCore,
++                        "Fika.Core.Main.Players.ObservedPlayer");
+ 
+-                ObservedCoopApplyShot = RefHelper.HookRef.Create(observedCoopPlayerType, "ApplyShot");
+-                ObservedCoopOnPhraseTold = RefHelper.HookRef.Create(observedCoopPlayerType, "OnPhraseTold");
++                    if (observedCoopPlayerType != null)
++                    {
++                        ObservedCoopApplyShot = RefHelper.HookRef.Create(observedCoopPlayerType, "ApplyShot");
++                        ObservedCoopOnPhraseTold = RefHelper.HookRef.Create(observedCoopPlayerType, "OnPhraseTold");
++                    }
++                }
++                catch (Exception ex)
++                {
++                    Debug.LogWarning("[KmyTarkovApi] Fika player integration unavailable: " + ex.Message);
++                }
+             }
+         }
+ 
+diff --git a/KmyTarkovApi/Helpers/SessionHelper.cs b/KmyTarkovApi/Helpers/SessionHelper.cs
+index d525d8c..ef1f2ca 100644
+--- a/KmyTarkovApi/Helpers/SessionHelper.cs
++++ b/KmyTarkovApi/Helpers/SessionHelper.cs
+@@ -1,8 +1,9 @@
+-﻿using System;
++using System;
+ using System.Reflection.Emit;
+ using System.Threading.Tasks;
+ using EFT;
+ using HarmonyLib;
++using JetBrains.Annotations;
+ using KmyTarkovReflection;
+ using UnityEngine;
+ 
+@@ -28,7 +29,8 @@ namespace KmyTarkovApi.Helpers
+         /// <summary>
+         ///     Init Action
+         /// </summary>
+-        public readonly RefHelper.HookRef CreateBackend;
++        /// <remarks>Unavailable in SPT 4.1.6 (the backend setup moved into a compiler-generated state machine).</remarks>
++        [CanBeNull] public readonly RefHelper.HookRef CreateBackend;
+ 
+         public readonly RefHelper.HookRef AfterApplicationLoaded;
+ 
+@@ -36,11 +38,6 @@ namespace KmyTarkovApi.Helpers
+         {
+             var applicationType = typeof(TarkovApplication);
+ 
+-            CreateBackend = RefHelper.HookRef.Create(applicationType,
+-                x => x.IsAsync() && x.ReturnType == typeof(Task) &&
+-                     x.ReadMethodBody().ContainsIL(OpCodes.Ldstr,
+-                         "_backEnd.Session.GetGlobalConfig+GetClientSettingsConfig"));
+-
+             AfterApplicationLoaded = RefHelper.HookRef.Create(applicationType,
+                 x => x.GetParameters().Length == 0 && x.ReturnType == typeof(void) &&
+                      x.ReadMethodBody().ContainsIL(OpCodes.Callvirt, AccessTools.Method(typeof(Action), "Invoke")));
+@@ -49,16 +46,13 @@ namespace KmyTarkovApi.Helpers
+         [EFTHelperHook]
+         private void Hook()
+         {
+-            CreateBackend.Add(this, nameof(OnCreateBackend));
++            // Prefix so Session is populated before any mod's AfterApplicationLoaded postfix runs.
++            AfterApplicationLoaded.Add(this, nameof(OnAfterApplicationLoaded), HarmonyPatchType.Prefix);
+         }
+ 
+-        private static async void OnCreateBackend(TarkovApplication __instance, Task __result)
++        private static void OnAfterApplicationLoaded(TarkovApplication __instance)
+         {
+-            await __result;
+-
+-            var session = __instance.GetClientBackEndSession();
+-
+-            Instance.Session = session;
++            Instance.Session = __instance.GetClientBackEndSession();
+         }
+ 
+         public class TraderSettingsData
