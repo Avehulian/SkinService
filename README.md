@@ -88,7 +88,7 @@ See [PORT_NOTES.md](PORT_NOTES.md) for the detailed API mapping.
 * This fork originates from `kmyuhkyuk/SkinService` and is ported to SPT 4.1.6.
 * Bundled KmyTarkovApi 2.0 build: **dustinmoon78** (plugin GUID `com.dustinmoon78.kmytarkovapi`).
 
-Credits for original assets stay with their authors; see `THIRD-PARTY-NOTICES.txt`.
+Credits for original assets stay with their authors.
 
 ## License
 
