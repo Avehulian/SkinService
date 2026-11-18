@@ -1,0 +1,20 @@
+THIRD-PARTY NOTICES
+===================
+
+SkinService
+-----------
+Original author: kmyuhkyuk  (https://github.com/kmyuhkyuk/SkinService)
+This repository is a fork / 4.1.6 port of the original SkinService project and is
+maintained independently. All credit for the original mod and its assets goes to
+kmyuhkyuk.
+
+KmyTarkovApi
+------------
+The bundled KmyTarkovApi 2.0 build is provided by dustinmoon78
+(plugin GUID com.dustinmoon78.kmytarkovapi).
+Upstream project: https://github.com/kmyuhkyuk/KmyTarkovApi
+
+Localization / game assets
+--------------------------
+Localized text, fonts and game reference assemblies are the property of their
+respective authors / Battlestate Games and are not owned by this project.

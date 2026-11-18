@@ -28,7 +28,7 @@ BepInEx/plugins/kmyuhkyuk-KmyTarkovApi      (required API + settings UI)
 SPT_Runtime/user/mods/kmyuhkyuk-SkinService (server mod)
 ```
 
-The default shortcut is unbound; set it in the KmyTarkovApi settings (F12) or open
+The default shortcut is **F9**; rebind it in the KmyTarkovApi settings (F12) or open
 the window from the settings page.
 
 ## Building
@@ -37,7 +37,7 @@ the window from the settings page.
 
 - Visual Studio 2022 (MSBuild, .NET Framework 4.7.2 targeting pack) for the client plugin
 - .NET 10 SDK for the server mod
-- The SPT 4.1.6 client assemblies in `References/EFT/` (already committed)
+- The SPT 4.1.6 client assemblies in `References/EFT/` (copy them from your SPT install; they are not committed)
 
 ### Build
 
@@ -81,6 +81,14 @@ Server:
 - Writes Body/Feet/Head/Hands/Voice into the saved profile customization and persists it.
 
 See [PORT_NOTES.md](PORT_NOTES.md) for the detailed API mapping.
+
+## Credits
+
+* Original mod: **kmyuhkyuk — [SkinService](https://github.com/kmyuhkyuk/SkinService)**
+* This fork originates from `kmyuhkyuk/SkinService` and is ported to SPT 4.1.6.
+* Bundled KmyTarkovApi 2.0 build: **dustinmoon78** (plugin GUID `com.dustinmoon78.kmytarkovapi`).
+
+Credits for original assets stay with their authors; see `THIRD-PARTY-NOTICES.txt`.
 
 ## License
 
